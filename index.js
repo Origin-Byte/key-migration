@@ -1,5 +1,6 @@
 import sha3 from 'js-sha3';
 import { blake2b } from '@noble/hashes/blake2b';
+import { sha3_256 } from '@noble/hashes/sha3';
 import { bytesToHex } from '@noble/hashes/utils';
 import {
     Ed25519PublicKey,
@@ -11,7 +12,7 @@ function oldEd25519Address(publicKey) {
     let tmp = new Uint8Array(Ed25519PublicKey.SIZE + 1);
     tmp.set([SIGNATURE_SCHEME_TO_FLAG['ED25519']]);
     tmp.set(publicKey.toBytes(), 1);
-    return sha3.sha3_256(tmp).slice(0, 40);
+    return bytesToHex(sha3_256(tmp)).slice(0, 40);
 }
 
 function newEd25519Address(publicKey) {
@@ -33,7 +34,7 @@ function oldSecp256k1Address(publicKey) {
     let tmp = new Uint8Array(Secp256k1PublicKey.SIZE + 1);
     tmp.set([SIGNATURE_SCHEME_TO_FLAG['Secp256k1']]);
     tmp.set(publicKey.toBytes(), 1);
-    return sha3.sha3_256(tmp).slice(0, 40);
+    return bytesToHex(sha3_256(tmp)).slice(0, 40);
 }
 
 function newSecp256k1Address(publicKey) {
