@@ -12,16 +12,16 @@ function normalize(value, addressLength) {
     return `0x${address.padStart(addressLength * 2, '0')}`;
 }
 
-function oldEd25519Address(publicKey) {
-    let tmp = new Uint8Array(Ed25519PublicKey.SIZE + 1);
-    tmp.set([SIGNATURE_SCHEME_TO_FLAG['ED25519']]);
+function oldAddress(flag, publicKey) {
+    let tmp = new Uint8Array(publicKey.data.length + 1);
+    tmp.set([SIGNATURE_SCHEME_TO_FLAG[flag]]);
     tmp.set(publicKey.toBytes(), 1);
     return bytesToHex(sha3_256(tmp)).slice(0, 40);
 }
 
-function newEd25519Address(publicKey) {
-    let tmp = new Uint8Array(Ed25519PublicKey.SIZE + 1);
-    tmp.set([SIGNATURE_SCHEME_TO_FLAG['ED25519']]);
+function newAddress(flag, publicKey) {
+    let tmp = new Uint8Array(publicKey.data.length + 1);
+    tmp.set([SIGNATURE_SCHEME_TO_FLAG[flag]]);
     tmp.set(publicKey.toBytes(), 1);
     return bytesToHex(blake2b(tmp, { dkLen: 32 })).slice(0, 64);
 }
@@ -32,23 +32,9 @@ export function generateEd25519Address(publicKey) {
     }
 
     return [
-        normalize(oldEd25519Address(publicKey), 20),
-        normalize(newEd25519Address(publicKey), 32),
+        normalize(oldAddress('ED25519', publicKey), 20),
+        normalize(newAddress('ED25519', publicKey), 32),
     ];
-}
-
-function oldSecp256k1Address(publicKey) {
-    let tmp = new Uint8Array(Secp256k1PublicKey.SIZE + 1);
-    tmp.set([SIGNATURE_SCHEME_TO_FLAG['Secp256k1']]);
-    tmp.set(publicKey.toBytes(), 1);
-    return bytesToHex(sha3_256(tmp)).slice(0, 40);
-}
-
-function newSecp256k1Address(publicKey) {
-    let tmp = new Uint8Array(Secp256k1PublicKey.SIZE + 1);
-    tmp.set([SIGNATURE_SCHEME_TO_FLAG['Secp256k1']]);
-    tmp.set(publicKey.toBytes(), 1);
-    return bytesToHex(blake2b(tmp, { dkLen: 32 })).slice(0, 64);
 }
 
 export function generateSecp256k1Address(publicKey) {
@@ -57,7 +43,7 @@ export function generateSecp256k1Address(publicKey) {
     }
 
     return [
-        normalize(oldSecp256k1Address(publicKey), 20),
-        normalize(newSecp256k1Address(publicKey), 30),
+        normalize(oldAddress('Secp256k1', publicKey), 20),
+        normalize(newAddress('Secp256k1', publicKey), 30),
     ];
 }
