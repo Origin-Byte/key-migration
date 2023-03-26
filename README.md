@@ -15,3 +15,27 @@ Correct working of the library can be verified using:
 npm install
 node tests.js
 ```
+
+## Obtaining Public Keys from Private Keys
+
+Installing the CLI (you will need to install [Node](https://nodejs.org/en)):
+
+```
+git clone https://github.com/Origin-Byte/key-migration.git
+cd key-migration
+npm i
+```
+
+If you have a private key from `sui.keystore` you can call the CLI without providing the signature schema as there is a prepended byte that can be used to select the correct schema.
+
+```
+node public-key.js {PRIVATE_KEY}
+```
+
+If you need to provide the schema, valid inputs are `ED25519` and `Secp256k1`.
+
+```
+node public-key.js {PRIVATE_KEY} ED25519
+```
+
+`public-key.js` assumes that all keys are encoded in `base64` unless they are prepended with `0x` in which case they will be interpreted as hexadecimal.
